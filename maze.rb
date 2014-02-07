@@ -1,16 +1,14 @@
 # Author: Steven Hu
 
 class Maze
-
-	attr_accessor :maze
+	attr_accessor :maze, :wall_row, :wall_col, :maze_string
 
 	def initialize(n, m)
-		@cell_row = n
-		@cell_col = m
 		@wall_row = (n*2) + 1
 		@wall_col = (m*2) + 1
 		@maze = Hash.new
 		@maze_string = ""
+		@solution = Hash.new
 	end
 
 	def load(arg)
@@ -20,15 +18,15 @@ class Maze
 			@maze[[counter / @wall_row, counter % @wall_row]] = i.to_i
 			counter += 1
 		end
-		@maze_string = args
+		@maze_string = arg
 	end
 
 	def display
-		display = @maze_string.chars.to_a
-		# might refactor
-		for x in 0..((@maze_string.length)-1)
-			if x % wall_row
-				put "#{display[x..(wall_row - 1)]}"
+		@maze.each do |key, val|
+			if key[1] == (@wall_row - 1)
+				puts val
+			else
+				print val
 			end
 		end
 	end
@@ -53,24 +51,31 @@ class Maze
 
 	def get_neighbors(x, y)
 		temp = []
-		if @maze[x+1,y] == 0
+		if @maze[[x+1,y]] == 0
 			temp << [x+1,y]
-		if @maze[x,y+1] == 0
+		end
+		if @maze[[x,y+1]] == 0
 			temp << [x,y+1]
-		if @maze[x-1,y] == 0
+		end
+		if @maze[[x-1,y]] == 0
 			temp << [x-1,y]
-		if @maze[x-1,y-1] == 0
-			temp << [x-1,y-1]			
+		end
+		if @maze[[x-1,y-1]] == 0
+			temp << [x-1,y-1]	
+		end
 		return temp
 	end
 
 	def trace(begX, begY, endX, endY)
-		# will think of something witty later
+		#@solution = @maze
 	end
 
 	def redesign
 		# if I get to it
 	end
-
 end
 
+test = Maze.new(4,4)
+test.load("111111111100010001111010101100010101101110101100000101111011101100000101111111111")
+test.display
+puts test.solve(0,0,3,4)
