@@ -64,7 +64,9 @@ class Maze
 			end
 			neighbors = get_neighbors(current.x, current.y)
 			neighbors.each do |node|
-				temp << node
+				if !node.nil?
+					temp << node
+				end
 			end
 		end
 		return false
@@ -75,23 +77,19 @@ class Maze
 	# (x,y) isn't that surrounding Node
 	def get_neighbors(x, y)
 		temp = []
-		if @maze[[x+1,y]].value == 0 && @maze[[x,y]].parent != [x+1,y]
-			@maze[[x+1,y]].parent = [x,y]
-			temp << @maze[[x+1,y]]
-		end
-		if @maze[[x,y+1]].value == 0 && @maze[[x,y]].parent != [x,y+1]
-			@maze[[x,y+1]].parent = [x,y]
-			temp << @maze[[x,y+1]]
-		end
-		if @maze[[x-1,y]].value == 0 && @maze[[x,y]].parent != [x-1,y]
-			@maze[[x-1,y]].parent = [x,y]
-			temp << @maze[[x-1,y]]
-		end
-		if @maze[[x,y-1]].value == 0 && @maze[[x,y]].parent != [x,y-1]
-			@maze[[x,y-1]].parent = [x,y]
-			temp << @maze[[x,y-1]]
-		end
+		temp << neighbor_helper(x, y, 1, 0)
+		temp << neighbor_helper(x, y, 0, 1)
+		temp << neighbor_helper(x, y, -1, 0)
+		temp << neighbor_helper(x, y, 0, -1)
 		return temp
+	end
+
+	def neighbor_helper(x, y, a, b)
+		if @maze[[x+a,y+b]].value == 0 && @maze[[x,y]].parent != [x+a,y+b]
+			@maze[[x+a,y+b]].parent = [x,y]
+			return @maze[[x+a, y+b]]
+		end
+		return nil
 	end
 
 	# displays the solved maze of given beginning and end (x,y) coordinates
