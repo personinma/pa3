@@ -7,7 +7,7 @@ require_relative 'node'
 
 class Maze
 
-	attr_reader :maze
+	attr_reader :maze, :temp
 
 	def initialize(n, m)
 		@wall_row = (n*2) + 1
@@ -46,10 +46,10 @@ class Maze
 		end
 	end
 
-	# displays the original maze
-	def display_original
+	# resets the maze to original (the one from original load - @maze_original)
+	def reset
+		@maze.clear
 		load(@maze_original)
-		display
 	end
 
 	# solves a maze by giving it a beginning and end (x,y) coordinates
@@ -94,8 +94,7 @@ class Maze
 
 	# displays the solved maze of given beginning and end (x,y) coordinates
 	def trace(begX, begY, endX, endY)
-		@maze.clear
-		load(@maze_original)
+		reset
 		solve(begX, begY, endX, endY)
 		curr_x = (endX * 2) + 1
 		curr_y = (endY * 2) + 1
@@ -112,8 +111,9 @@ class Maze
 				@maze[[curr_x, curr_y]].value = "S"
 				return display
 			else
-				curr_x = @maze[[curr_x, curr_y]].parent[0]
-				curr_y = @maze[[curr_x, curr_y]].parent[1]
+				par = @maze[[curr_x, curr_y]].parent
+				curr_x = par[0]
+				curr_y = par[1]
 				@maze[[curr_x, curr_y]].value = "X"
 			end
 		end
